@@ -881,11 +881,14 @@ public class BenchmarkScore extends AbstractMojo {
             final String TESTSUITE_VERSION_PREFIX = " version: ";
             if (line != null) {
                 String[] firstLineElements = line.split(", ");
+                // Version string is the second last element
+                int versionIndex = firstLineElements.length - 2;
                 int startOfVersionStringLocation =
-                        firstLineElements[4].indexOf(TESTSUITE_VERSION_PREFIX);
+                        firstLineElements[versionIndex].indexOf(TESTSUITE_VERSION_PREFIX);
                 if (startOfVersionStringLocation != -1) {
                     final String TESTSUITENAME =
-                            firstLineElements[4].substring(0, startOfVersionStringLocation);
+                            firstLineElements[versionIndex].substring(
+                                    0, startOfVersionStringLocation);
                     tr.setTestSuiteName(TESTSUITENAME);
                     BenchmarkScore.TESTSUITE = TESTSUITENAME; // Set classwide variable
                     BenchmarkScore.TESTCASENAME = // Set classwide variable;
@@ -900,7 +903,7 @@ public class BenchmarkScore extends AbstractMojo {
                     throw new IOException(versionNumError);
                 }
                 // Trim off everything except the version #
-                line = firstLineElements[4].substring(startOfVersionStringLocation);
+                line = firstLineElements[versionIndex].substring(startOfVersionStringLocation);
                 tr.setTestSuiteVersion(line);
             }
 
@@ -927,13 +930,15 @@ public class BenchmarkScore extends AbstractMojo {
                         tcr.setNumber(Reader.testNumber(parts[0]));
 
                         // Handle situation where expected results has full details
-                        // Sometimes, it also has: source, data flow, data flow filename, sink
+                        // Sometimes, it also has:
+                        // test name, category, real vulnerability, cwe, template, source, vuln src,
+                        // data flow, vuln df, sink, vuln sink, UI Template
 
-                        if (parts.length > 4) {
-                            tcr.setSource(parts[4]);
-                            tcr.setDataFlow(parts[5]);
+                        if (parts.length > 9) {
+                            tcr.setSource(parts[5]);
+                            tcr.setDataFlow(parts[7]);
                             // tcr.setDataFlowFile(parts[6]);
-                            tcr.setSink(parts[6]);
+                            tcr.setSink(parts[9]);
                         }
 
                         tr.put(tcr);
