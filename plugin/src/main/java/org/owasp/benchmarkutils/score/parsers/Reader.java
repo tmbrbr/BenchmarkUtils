@@ -217,8 +217,8 @@ public abstract class Reader {
                 return -1;
             }
             int numberStart = path.indexOf(BenchmarkScore.TESTCASENAME)
-                    + BenchmarkScore.TESTCASENAME.length()
-                    + 1;
+                    + BenchmarkScore.TESTCASENAME.length();
+
             path = path.substring(numberStart);
             // System.out.println("After length: " + path);
             path = path.replaceAll("\\?.*", "");
