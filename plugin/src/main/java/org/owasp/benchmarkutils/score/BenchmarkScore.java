@@ -935,6 +935,7 @@ public class BenchmarkScore extends AbstractMojo {
                         // data flow, vuln df, sink, vuln sink, UI Template
 
                         if (parts.length > 9) {
+                            tcr.setTemplate(parts[4]);
                             tcr.setSource(parts[5]);
                             tcr.setDataFlow(parts[7]);
                             // tcr.setDataFlowFile(parts[6]);
@@ -987,7 +988,7 @@ public class BenchmarkScore extends AbstractMojo {
 
             // Write actual results header
             ps.print("# test name, category, CWE, ");
-            if (fulldetails) ps.print("source, data flow, sink, ");
+            if (fulldetails) ps.print("template, source, data flow, sink, ");
             ps.print(
                     "real vulnerability, identified by tool, pass/fail, "
                             + TESTSUITE
@@ -1006,6 +1007,7 @@ public class BenchmarkScore extends AbstractMojo {
                 ps.print(", " + actualResult.getCategory());
                 ps.print(", " + actualResult.getCWE());
                 if (fulldetails) {
+                    ps.print("," + actualResult.getTemplate());
                     ps.print("," + actualResult.getSource());
                     ps.print("," + actualResult.getDataFlow());
                     ps.print("," + actualResult.getSink());

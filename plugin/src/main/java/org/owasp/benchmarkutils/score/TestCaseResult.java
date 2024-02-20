@@ -33,6 +33,7 @@ public class TestCaseResult {
     private int confidence = 0;
 
     // optional attributes
+    private String template = null;
     private String source = null;
     private String dataflow = null;
     private String sink = null;
@@ -106,6 +107,14 @@ public class TestCaseResult {
 
     public void setEvidence(String evidence) {
         this.evidence = evidence;
+    }
+
+    public String getTemplate() {
+        return this.template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 
     public String getSource() {
