@@ -33,6 +33,9 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONObject;
+import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.IRFactory;
+import org.mozilla.javascript.ast.AstRoot;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -44,6 +47,7 @@ public class ResultFile {
     private final File originalFile;
     private JSONObject contentAsJson;
     private Document contentAsXml;
+    private AstRoot contentAsJavaScriptAst;
 
     public ResultFile(File fileToParse) throws IOException {
         this(fileToParse, readFileContent(fileToParse));
@@ -63,6 +67,7 @@ public class ResultFile {
         filename = originalFile.getName();
         parseJson();
         parseXml();
+        parseJavaScript();
     }
 
     private String removeBom(byte[] rawContent) {
@@ -106,6 +111,21 @@ public class ResultFile {
         }
     }
 
+    private void parseJavaScript() {
+        try {
+            CompilerEnvirons env = new CompilerEnvirons();
+            env.setRecoverFromErrors(true);
+            env.setGenerateDebugInfo(true);
+            env.setRecordingComments(true);
+
+            IRFactory factory = new IRFactory(env);
+            contentAsJavaScriptAst = factory.parse(removeBom(rawContent), null, 0);
+
+        } catch (Exception ignored) {
+            // No JSON
+        }
+    }
+
     public String filename() {
         return filename;
     }
@@ -116,6 +136,14 @@ public class ResultFile {
 
     public boolean isXml() {
         return contentAsXml != null;
+    }
+
+    public AstRoot asJavaScript() {
+        return contentAsJavaScriptAst;
+    }
+
+    public boolean isJavaScript() {
+        return contentAsJavaScriptAst != null;
     }
 
     public JSONObject json() {

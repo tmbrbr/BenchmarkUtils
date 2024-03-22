@@ -89,6 +89,7 @@ public abstract class Reader {
                 new SemgrepReader(),
                 new ShiftLeftReader(),
                 new ShiftLeftScanReader(),
+                new SkipfishReader(),
                 new SnappyTickReader(),
                 new SnykReader(),
                 new SonarQubeJsonReader(),
@@ -123,8 +124,7 @@ public abstract class Reader {
     // called 'key' whose value matches 'keyvalue'
 
     public static Node getNamedNode(String name, String keyValue, NodeList list) {
-        if ((name == null) || (keyValue == null) || (list == null))
-            return null;
+        if ((name == null) || (keyValue == null) || (list == null)) return null;
         for (int i = 0; i < list.getLength(); i++) {
             Node n = list.item(i);
             if (n.getNodeName().equals(name)) {
@@ -173,8 +173,7 @@ public abstract class Reader {
     }
 
     public static String getAttributeValue(String name, Node node) {
-        if (node == null)
-            return null;
+        if (node == null) return null;
         NamedNodeMap nnm = node.getAttributes();
         if (nnm != null) {
             Node attrnode = nnm.getNamedItem(name);
@@ -216,16 +215,18 @@ public abstract class Reader {
             if (path.indexOf(BenchmarkScore.TESTCASENAME) < 0) {
                 return -1;
             }
-            int numberStart = path.indexOf(BenchmarkScore.TESTCASENAME)
-                    + BenchmarkScore.TESTCASENAME.length();
+            int numberStart =
+                    path.indexOf(BenchmarkScore.TESTCASENAME)
+                            + BenchmarkScore.TESTCASENAME.length();
 
             path = path.substring(numberStart);
             // System.out.println("After length: " + path);
             path = path.replaceAll("\\?.*", "");
             path = path.replaceAll(",.*", "");
 
-            path = path.replaceAll(
-                    BenchmarkScore.TESTCASENAME + "v[0-9]*", BenchmarkScore.TESTCASENAME);
+            path =
+                    path.replaceAll(
+                            BenchmarkScore.TESTCASENAME + "v[0-9]*", BenchmarkScore.TESTCASENAME);
 
             path = path.replaceAll("/send", "");
             if (path.contains(":")) {
